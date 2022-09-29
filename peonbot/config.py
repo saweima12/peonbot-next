@@ -1,0 +1,7 @@
+# COMMON
+DOMAIN_URL="http://localhost"
+REGISTRY_KEY=""
+
+# BOT
+BOT_TOKEN=""
+URL_PREFIX="/"
