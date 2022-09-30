@@ -26,7 +26,7 @@ def setup(app: Sanic):
     @app.main_process_start
     async def startup(app: Sanic):
         info = await bot.get_webhook_info()
-        if not (info.url == webhook_url):
+        if info.url != webhook_url:
             await bot.set_webhook(webhook_url)
 
     @app.before_server_stop
