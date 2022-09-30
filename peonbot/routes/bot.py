@@ -3,7 +3,7 @@ from sanic.log import logger
 from aiogram.types import Update
 from peonbot.services import bot
 
-bp = Blueprint("inline_query")
+bp = Blueprint("peon")
 
 @bp.post("/<token:str>")
 async def on_update(request: Request, token: str):
@@ -16,8 +16,10 @@ async def on_update(request: Request, token: str):
 
     update = Update(**request.json)
     logger.debug(f"on_update {update.as_json()}")
-    # set default bot & dispatch event.
+    # set default bot
     _bot.set_current(_bot)
+
+    # dispatcher event
     await _dp.process_update(update)
     return response.empty(200)
 
