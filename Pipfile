@@ -4,12 +4,14 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-sanic = {extras = ["ext"], version = "*"}
 aiogram = "*"
 pydantic = "*"
-meilisearch-python-async = "*"
 orjson = "*"
-croniter = "*"
+apscheduler = "*"
+redis = "*"
+sanic = {extras = ["ext"], version = "*"}
+tortoise-orm = {extras = ["asyncpg"], version = "*"}
+opencc = "*"
 
 [dev-packages]
 pytest = "*"
