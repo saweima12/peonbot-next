@@ -1,7 +1,7 @@
 import os
 from sanic import Sanic
 
-from .services import bot
+from .services import bot, scheduler
 from . import config, routes, handler
 
 
@@ -15,8 +15,9 @@ env_path = os.environ.get("BOT_CONFIG")
 if env_path:
     app.update_config(env_path)
 
-# setup bot instance.
+# setup services
 bot.setup(app)
+scheduler.setup(app)
 
 # setup bussiness logic.
 handler.register_handler(app)
