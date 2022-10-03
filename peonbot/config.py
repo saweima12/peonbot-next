@@ -1,7 +1,12 @@
 # COMMON
-DOMAIN_URL="http://localhost"
-REGISTRY_KEY=""
+DOMAIN_URL="https://localhost"
+URL_PREFIX="/"
 
 # BOT
 BOT_TOKEN=""
-URL_PREFIX="/"
+POSTGRES_URI=""
+REDIS_URI=""
+
+
+# CUSTOM
+ALLOW_USERS_ID=[]
