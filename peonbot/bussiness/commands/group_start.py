@@ -1,6 +1,6 @@
 from sanic import Sanic
 from sanic.log import logger 
-from peonbot.extension.helper import MessageHelper
+from peonbot.extension.msg_helper import MessageHelper
 
 
 async def process(*params, helper: MessageHelper, **options):
