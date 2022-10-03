@@ -29,7 +29,7 @@ def setup(app: Sanic):
         if info.url != webhook_url:
             await bot.set_webhook(webhook_url)
 
-    @app.before_server_stop
+    @app.main_process_stop
     async def dispose(app: Sanic):
         await bot.delete_webhook()
 
