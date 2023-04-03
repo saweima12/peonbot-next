@@ -10,6 +10,7 @@ pydantic = "*"
 orjson = "*"
 croniter = "*"
 redis = "*"
+tortoise-orm = {extras = ["asyncpg"], version = "*"}
 
 [dev-packages]
 pytest = "*"
