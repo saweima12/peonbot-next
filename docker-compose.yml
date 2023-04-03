@@ -11,3 +11,10 @@ services:
     environment:
       - INLINEBOT_CONFIG=/app/env.py
     command: "sanic peonbot:app -H 0.0.0.0 -p 8000 -w 1"
+
+  redis:
+    image: redislabs/rejson:latest
+    container_name: "redis"
+    ports:
+     - 172.17.0.1:6379:6379
+    command: "redis-server --loadmodule /usr/lib/redis/modules/rejson.so --loadmodule /usr/lib/redis/modules/redisearch.so"
