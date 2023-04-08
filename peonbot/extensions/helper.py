@@ -1,5 +1,4 @@
-from typing import Dict
-from aiogram.types import Message, Sticker, Animation, Video, VideoNote, Audio
+from aiogram.types import Message
 
 class MessageHelper:
 
@@ -18,15 +17,19 @@ class MessageHelper:
     def user_id(self) -> str:
         return str(self.msg.from_user.id)
 
+    @property
+    def chat_id(self) -> str:
+        return str(self.msg.chat.id)
+    
+
     def is_media(self) -> bool:
         return self.content_type in ["sticker", "animation"]
 
     def is_text(self) -> bool:
         return self.msg.content_type == "text"
-    
+
     def is_sticker(self) -> bool:
         return self.msg.content_type == "sticker"
-    
+
     def is_animation(self) -> bool:
         return self.msg.content_type == "animation"
-    

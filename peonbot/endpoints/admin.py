@@ -1,6 +1,6 @@
 from sanic import Blueprint, Request, response
 from aiogram.types import Update
-from peonbot.services import bot
+from peonbot.common import bot
 
 bp = Blueprint("dataview", url_prefix="/admin")
 

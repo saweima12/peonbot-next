@@ -1,7 +1,9 @@
-# COMMON
-DOMAIN_URL="http://localhost"
-REGISTRY_KEY=""
-
-# BOT
+DOMAIN_URL = "http://localhost"
+URL_PREFIX="/api/v1"
+# Bot
+BOT_ENDPOINT ="/bot"
 BOT_TOKEN=""
-URL_PREFIX="/"
+
+# Database
+POSTGRES_URI=""
+REDIS_URI="redis://localhost:6379"

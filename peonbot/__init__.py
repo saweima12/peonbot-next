@@ -1,25 +1,55 @@
 import os
 from sanic import Sanic
+from tortoise.contrib.sanic import register_tortoise
 
-from .services import bot
-from . import config, routes, handler
+from .common import bot, scheduler, redis
 
+from . import (
+    config as default_config,
+    endpoints,
+    handler,
+    tasks,
+    services
+)
 
-# define sanic application.
-app = Sanic(__name__, env_prefix="BOT_")
-# load default config
-app.update_config(config)
+def create_app() -> Sanic:
+    """
+    Create sanic application.
+    """
 
-# load config on environment path.
-env_path = os.environ.get("BOT_CONFIG")
-if env_path:
-    app.update_config(env_path)
+    # Declare sanic instance and load default config.
+    app = Sanic(__name__, env_prefix="BOT_")
+    app.update_config(default_config)
 
-# setup bot instance.
-bot.setup(app)
+    # Try loading external config with environment path.
+    env_path = os.environ.get("BOT_CONFIG")
+    if env_path:
+        app.update_config(env_path)
 
-# setup bussiness logic.
-handler.register_handler(app)
+    # setup redis
+    redis.setup(app)
 
-# register route.
-routes.register(app)
+    # setup database
+    db_uri = app.config.get("DB_URI")
+    orm_modules = dict(
+        peon_entities=["peonbot.models.db"]
+    )
+
+    register_tortoise(app,
+        db_url=db_uri,
+        modules=orm_modules,
+        generate_schemas=True
+    )
+
+    # setup bot & message handler
+    _, _dp = bot.setup(app)
+    handler.register(app, _dp)
+
+    # setup scheduler & register task
+    _scheduler = scheduler.setup(app)
+    tasks.register(_scheduler)
+
+    # register route.
+    endpoints.register(app)
+
+    return app
