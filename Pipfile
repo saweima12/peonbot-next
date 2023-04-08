@@ -10,12 +10,13 @@ pydantic = "*"
 orjson = "*"
 croniter = "*"
 redis = "*"
-tortoise-orm = {extras = ["asyncpg"], version = "*"}
+tortoise-orm = {extras = ["psycopg"], version = "*"}
 
 [dev-packages]
 pytest = "*"
 sniffio = "*"
 sanic-testing = "*"
+pylint = "*"
 
 [requires]
 python_version = "3.10"
