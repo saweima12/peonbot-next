@@ -1,9 +1,9 @@
 from abc import ABC
-from redis.asyncio import StrictRedis
+from redis.asyncio import Redis
 
 class RedisBaseProxy(ABC):
 
-    def __init__(self, namespace: str, connection: StrictRedis):
+    def __init__(self, namespace: str, connection: Redis):
         self.__redis = connection
         self.__namespace = namespace
 

@@ -1,7 +1,8 @@
-from redis.asyncio import ConnectionPool, StrictRedis
+from redis.asyncio import ConnectionPool, Redis
 from .proxies import (
     RedisHashProxy,
-    RedisJsonProxy
+    RedisJsonProxy,
+    RedisSetProxy
 )
 
 class RedisProxyFactory:
@@ -10,10 +11,13 @@ class RedisProxyFactory:
         self.connection_pool = connection_pool
 
     def get_connection(self):
-        return StrictRedis(connection_pool=self.connection_pool)
+        return Redis(connection_pool=self.connection_pool, decode_responses=True)
 
-    def get_json(self, namespace: str, conn: StrictRedis) -> RedisJsonProxy:
+    def get_json(self, namespace: str, conn: Redis) -> RedisJsonProxy:
         return RedisJsonProxy(namespace, conn)
 
-    def get_hash_map(self, namespace: str, conn: StrictRedis) -> RedisHashProxy:
+    def get_hash_map(self, namespace: str, conn: Redis) -> RedisHashProxy:
         return RedisHashProxy(namespace, conn)
+
+    def get_set(self, namespace: str, conn: Redis) -> RedisSetProxy:
+        return RedisSetProxy(namespace, conn)

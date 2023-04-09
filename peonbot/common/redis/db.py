@@ -1,13 +1,13 @@
 from sanic import Sanic
 from sanic.log import logger
-from redis.asyncio import ConnectionPool, StrictRedis
+from redis.asyncio import ConnectionPool, Redis
 from .type import RedisProxyFactory
 
 SERVICE_CODE = "redis"
 
-def get_conn(app: Sanic) -> StrictRedis:
+def get_conn(app: Sanic) -> Redis:
     _pool = get_pool(app)
-    return StrictRedis(connection_pool=_pool)
+    return Redis(connection_pool=_pool)
 
 def get_factory(app: Sanic) -> RedisProxyFactory:
     _pool = get_pool(app)

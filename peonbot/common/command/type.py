@@ -34,5 +34,8 @@ class CommandMap:
     async def notify(self, text: str, **kwargs):
         cmd, cmd_args = self._command_split(text)
         handler = self.__handlers.get(cmd)
-        if (handler):
-            await handler(*cmd_args, **kwargs)
+        if not handler:
+            return
+
+        await handler(*cmd_args, **kwargs)
+        
