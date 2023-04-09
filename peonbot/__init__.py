@@ -2,15 +2,12 @@ import os
 from sanic import Sanic
 from tortoise.contrib.sanic import register_tortoise
 
-from .common import bot, scheduler, redis
 
-from . import (
-    config as default_config,
-    endpoints,
-    handler,
-    tasks,
-    services
-)
+from peonbot import default_config, handler, endpoints
+from peonbot.bussiness import tasks, commands
+from .common import bot, scheduler, redis, command
+
+
 
 def create_app() -> Sanic:
     """
@@ -48,6 +45,10 @@ def create_app() -> Sanic:
     # setup scheduler & register task
     _scheduler = scheduler.setup(app)
     tasks.register(_scheduler)
+
+    # setup command map & register command
+    _cmd_map = command.setup(app)
+    commands.register(_cmd_map)
 
     # register route.
     endpoints.register(app)

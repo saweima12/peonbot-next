@@ -18,8 +18,7 @@ def setup(app: Sanic) -> Tuple[Bot, Dispatcher]:
     domain_url = app.config.get("DOMAIN_URL")
     url_prefix = app.config.get("BOT_ENDPOINT")
     webhook_url = f"{domain_url}{url_prefix}/{token}"
-    
-    print(webhook_url)
+
     bot = Bot(token)
     bot_dp = Dispatcher(bot)
 
