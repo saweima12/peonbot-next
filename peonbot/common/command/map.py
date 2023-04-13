@@ -8,6 +8,6 @@ def get_map(app: Sanic):
 
 def setup(app: Sanic) -> CommandMap:
     _map = CommandMap()
-
     setattr(app.ctx, SERVICE_CODE, _map)
+
     return _map

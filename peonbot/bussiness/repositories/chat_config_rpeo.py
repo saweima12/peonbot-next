@@ -25,12 +25,12 @@ class ChatConfigRepository(BaseRepository):
             # found config from dataase.
             data = ChatConfig(**result.config_json)
             # save to redis cache.
-            await self.set_cache(chat_id, data)
+            await self.set_config_cache(chat_id, data)
             return data
 
         return None
 
-    async def set_cache(self, chat_id: str, data: ChatConfig):
+    async def set_config_cache(self, chat_id: str, data: ChatConfig):
         # generate namespace string.
         namespace = self.get_namespace(chat_id)
 
@@ -39,7 +39,7 @@ class ChatConfigRepository(BaseRepository):
             await proxy.set(data.dict())
 
 
-    async def set_db(self, chat_id: str, data: ChatConfig):
+    async def set_config_db(self, chat_id: str, data: ChatConfig):
         # write into database.
         await PeonChatConfig.update_or_create({
             'status': data.status,

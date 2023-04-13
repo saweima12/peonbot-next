@@ -1,1 +1,1 @@
-from .message_pipeline import MessagePipeline
+from .group_pipeline import GroupPipeline
