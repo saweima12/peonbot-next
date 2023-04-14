@@ -48,5 +48,9 @@ class ChatConfigRepository(BaseRepository):
         }, chat_id=chat_id)
 
 
+    async def get_avaliable_chat_ids(self):
+        items = await PeonChatConfig.filter(status="ok")
+        return [ item.chat_id for item in items]
+
     def get_namespace(self, chat_id: str):
         return f"{chat_id}:config"
