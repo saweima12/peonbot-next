@@ -23,6 +23,10 @@ class MessageHelper:
     @property
     def sender_id(self) -> str:
         return str(self.msg.from_user.id)
+    
+    @property
+    def sender_fullname(self) -> str:
+        return str(self.msg.from_user.full_name)
 
     @property
     def message_id(self) -> str:

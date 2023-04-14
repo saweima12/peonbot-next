@@ -18,7 +18,7 @@ class PeonService:
 
     async def is_whitelist(self, user_id: str):
         whitelist = await self.bot_repo.get_whitelist()
-        return user_id.encode("utf-8") in whitelist
+        return user_id in whitelist
 
     async def delete_message(self, chat_id: str, message_id: str) -> bool:
         for _ in range(3):

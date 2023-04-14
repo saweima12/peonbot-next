@@ -1,9 +1,10 @@
+from datetime import datetime
 from peonbot import textlang
 from peonbot.common.command import CommandMap
 from peonbot.extensions.helper import MessageHelper
 from peonbot.models.context import MessageContext
-from peonbot.models.common import Status
-from peonbot.models.redis import ChatConfig
+from peonbot.models.common import Status, MemberLevel
+from peonbot.models.redis import ChatConfig, UserRecord
 
 
 from peonbot.bussiness.services import (
@@ -56,13 +57,14 @@ class GroupPipeline:
         # cache context.
         is_admin = msg.sender_id in set(chat_config.adminstrators)
         is_whitelist = await self.peon_service.is_whitelist(msg.sender_id)
-        point = await self.record_service.get_point(msg.chat_id, msg.sender_id)
-
+        user_record = await self.record_service.get_record(msg.chat_id, msg.sender_id)
+        member_level = self._get_member_level(user_record, chat_config)
         context = MessageContext(
             chat_config=chat_config,
             is_admin=is_admin,
             is_whitelist=is_whitelist,
-            point=point,
+            level=member_level,
+            user_record=user_record,
             mark_delete=False,
             mark_record=True
         )
@@ -83,7 +85,7 @@ class GroupPipeline:
 
     async def check_message_type(self, helper: MessageHelper, ctx: MessageContext) -> bool:
 
-        if ctx.point >= ctx.chat_config.senior_count:
+        if ctx.level >= MemberLevel.JUNIOR:
             return True
 
         if helper.is_forward():
@@ -112,7 +114,7 @@ class GroupPipeline:
 
     async def check_has_url(self, helper: MessageHelper, ctx: MessageContext):
 
-        if ctx.point > ctx.chat_config.senior_count:
+        if ctx.level >= MemberLevel.JUNIOR:
             return True
 
         if helper.has_url():
@@ -125,6 +127,7 @@ class GroupPipeline:
 
         if not helper.is_text():
             ctx.mark_record = False
+            return True
 
         if not len(helper.content) < 5:
             ctx.mark_record = False
@@ -143,3 +146,14 @@ class GroupPipeline:
             return False
 
         return True
+
+    def _get_member_level(self, user_record: UserRecord, chat_config: ChatConfig):
+
+        if user_record.msg_count > chat_config.senior_count:
+            created_time = user_record.created_time.replace(tzinfo=None)
+            offset = datetime.utcnow() - created_time
+            if offset.days >= chat_config.senior_day:
+                return MemberLevel.SENIOR
+            elif offset.days >= chat_config.junior_day:
+                return MemberLevel.JUNIOR
+        return MemberLevel.NONE

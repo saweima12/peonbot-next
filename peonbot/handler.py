@@ -97,7 +97,10 @@ def register(app: Sanic, dp: Dispatcher):
             _task.append(peon_service.delete_message(helper.chat_id, helper.message_id))
 
         if ctx.mark_record:
-            _task.append(record_service.set_cache_point(helper.chat_id, helper.sender_id, ctx.point + 1))
+            new_point = ctx.user_record.msg_count + 1
+            _task.append(
+                record_service.set_cache_point(helper.chat_id, helper.sender_id, helper.sender_fullname, new_point)
+            )
 
         if ctx.msg.strip():
             fullname = helper.msg.from_user.full_name

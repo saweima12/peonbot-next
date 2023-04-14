@@ -18,11 +18,11 @@ class BotContextRepository(BaseRepository):
             logger.debug(f"Query namespace: {namespace}")
 
             result = await proxy.members()
+            result = [ item.decode("utf-8") for item in list(result)]
             if result:
                 return set(result)
 
             result = await PeonUserWhitelist.all()
-            print(result)
             if result:
                 user_ids = [item.user_id for item in result]
                 await proxy.add(*user_ids)

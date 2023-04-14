@@ -1,3 +1,3 @@
-from .chat_config_rpeo import ChatConfigRepository
+from .chat_config_repo import ChatConfigRepository
 from .bot_config_repo import BotContextRepository
 from .record_repo import RecordRepository
