@@ -16,7 +16,7 @@ class RedisBaseProxy(ABC):
         return self.__namespace
 
     async def exists(self):
-        return self.__redis.exists(self.namespace)
+        return await self.__redis.exists(self.namespace)
 
     async def delete(self):
-        return self.__redis.delete(self.namespace)
+        return await self.__redis.delete(self.namespace)

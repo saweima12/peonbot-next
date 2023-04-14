@@ -27,13 +27,15 @@ class TaskExecutor():
         self.task_id = task_id
         self.task = task
         self.cron_expression = cron_expression
-        self.croniter = croniter(cron_expression)
         self.start_time = start_time
         self.utc = utc
         self.logger = logger
         self._first_run = True
         self._scheduler = None
         self._runtask = None
+
+        if self.cron_expression:
+            self.croniter = croniter(cron_expression)
 
     @staticmethod
     def create(
@@ -66,12 +68,12 @@ class TaskExecutor():
                 await asyncio.sleep(next_delta)
 
             try:
-                self.logger.info(f"Task start: {self.task_id}")
+                self.logger.debug(f"Task start: {self.task_id}")
                 self._first_run = False
 
                 await self.task.run()
 
-                self.logger.info(f"Task finished: {self.task_id}")
+                self.logger.debug(f"Task finished: {self.task_id}")
 
                 if next_delta <= 0:
                     break
