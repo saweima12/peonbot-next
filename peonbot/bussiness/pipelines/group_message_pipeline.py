@@ -1,32 +1,37 @@
-from datetime import datetime
+import asyncio
 from peonbot import textlang
 from peonbot.common.command import CommandMap
 from peonbot.extensions.helper import MessageHelper
 from peonbot.models.context import MessageContext
 from peonbot.models.common import Status, MemberLevel
-from peonbot.models.redis import ChatConfig, UserRecord
+from peonbot.models.redis import ChatConfig
 
+from peonbot.models.common import PermissionLevel
 
 from peonbot.bussiness.services import (
     ChatConfigService,
-    PeonService,
-    RecordService
+    CommonService,
+    RecordService,
+    PeonService
 )
 
 
-class GroupPipeline:
+class GroupMessagePipeline:
 
     def __init__(self,
+                command_map: CommandMap,
+                common_service: CommonService,
                 chat_service: ChatConfigService,
-                peon_service: PeonService,
                 record_service: RecordService,
-                command_map: CommandMap):
-        self.peon_service = peon_service
+                peon_service: PeonService,
+                **_):
+        self.common_service = common_service
         self.chat_service = chat_service
         self.record_service = record_service
+        self.peon_service = peon_service
         self.command_map = command_map
 
-        self.sequence = [
+        self.check_sequence = [
             self.check_command,
             self.check_permission,
             self.check_message_type,
@@ -44,36 +49,20 @@ class GroupPipeline:
         if not chat_config.status == Status.OK:
             return None
 
-        context = await self.cache_context(msg, chat_config)
+        context = await self.__cache_context(msg, chat_config)
 
-        for handle in self.sequence:
+        for handle in self.check_sequence:
             _next = await handle(msg, context)
             if not _next:
                 break
 
         return context
 
-    async def cache_context(self, msg: MessageHelper, chat_config: ChatConfig) -> MessageContext:
-        # cache context.
-        is_admin = msg.sender_id in set(chat_config.adminstrators)
-        is_whitelist = await self.peon_service.is_whitelist(msg.sender_id)
-        user_record = await self.record_service.get_record(msg.chat_id, msg.sender_id)
-        member_level = self._get_member_level(user_record, chat_config)
-        context = MessageContext(
-            chat_config=chat_config,
-            is_admin=is_admin,
-            is_whitelist=is_whitelist,
-            level=member_level,
-            user_record=user_record,
-            mark_delete=False,
-            mark_record=True
-        )
-        return context
-
     async def check_command(self, helper: MessageHelper, ctx: MessageContext) -> bool:
         if helper.is_text():
             if self.command_map.is_avaliable(helper.content):
-                await self.command_map.notify(helper.content, helper=helper, context=ctx)
+                await self.command_map.notify(helper.content, helper=helper, ctx=ctx)
+                ctx.mark_record = False
                 return False
 
         return True
@@ -104,7 +93,7 @@ class GroupPipeline:
 
     async def check_message_content(self, helper: MessageHelper, ctx: MessageContext):
 
-        if not self._check_content_allow(helper):
+        if not self.__check_content_allow(helper):
             ctx.mark_delete = True
             ctx.mark_record = False
             ctx.msg = textlang.REASON_MEDIA
@@ -134,7 +123,35 @@ class GroupPipeline:
 
         return True
 
-    def _check_content_allow(self, helper: MessageHelper,) -> bool:
+    async def process_message(self, helper: MessageHelper, ctx: MessageContext):
+
+        _task = []
+        if ctx.mark_delete:
+            _task.append(self.peon_service.delete_message(helper.chat_id, helper.message_id))
+            _task.append(self.peon_service.set_member_permission(
+                helper.chat_id,
+                helper.sender_id,
+                PermissionLevel.LIMIT)
+            )
+
+        if ctx.mark_record:
+            record = ctx.user_record
+            record.msg_count += 1
+            record.full_name = helper.sender_fullname
+            _task.append(
+                self.record_service.set_cache_record(helper.chat_id, record)
+            )
+
+        if ctx.msg.strip():
+            fullname = helper.msg.from_user.full_name
+            _text = textlang.DELETE_PATTERN.format(fullname=fullname, user_id=helper.sender_id, reason=ctx.msg)
+            _task.append(self.peon_service.send_delete_tips(helper.chat_id, helper.sender_id, _text))
+
+        if len(_task) >= 1:
+            await self.common_service.add_task(asyncio.gather(*_task))
+
+
+    def __check_content_allow(self, helper: MessageHelper,) -> bool:
 
         if helper.msg.via_bot:
             return False
@@ -147,13 +164,19 @@ class GroupPipeline:
 
         return True
 
-    def _get_member_level(self, user_record: UserRecord, chat_config: ChatConfig):
+    async def __cache_context(self, msg: MessageHelper, chat_config: ChatConfig) -> MessageContext:
+        # cache context.
+        is_admin = msg.sender_id in set(chat_config.adminstrators)
+        is_whitelist = await self.common_service.is_whitelist(msg.sender_id)
+        user_record = await self.record_service.get_record(msg.chat_id, msg.sender_id)
 
-        if user_record.msg_count > chat_config.senior_count:
-            created_time = user_record.created_time.replace(tzinfo=None)
-            offset = datetime.utcnow() - created_time
-            if offset.days >= chat_config.senior_day:
-                return MemberLevel.SENIOR
-            elif offset.days >= chat_config.junior_day:
-                return MemberLevel.JUNIOR
-        return MemberLevel.NONE
+        context = MessageContext(
+            chat_config=chat_config,
+            is_admin=is_admin,
+            is_whitelist=is_whitelist,
+            level=user_record.member_level,
+            user_record=user_record,
+            mark_delete=False,
+            mark_record=True
+        )
+        return context
