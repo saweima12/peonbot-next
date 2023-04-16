@@ -4,8 +4,7 @@ from .type import TaskScheduler
 
 SERVICE_CODE="scheduler"
 
-def get_scheduler():
-    app = Sanic.get_app()
+def get_scheduler(app: Sanic):
     return getattr(app.ctx, SERVICE_CODE)
 
 

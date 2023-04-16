@@ -42,7 +42,8 @@ class RecordRepository(BaseRepository):
                 user_id=record.user_id,
                 full_name=record.full_name,
                 msg_count=record.msg_count,
-                created_time=record.created_time
+                created_time=record.created_time,
+                member_level=record.member_level
             )
 
             await self.set_cache(chat_id, record)
@@ -71,7 +72,8 @@ class RecordRepository(BaseRepository):
 
         await PeonBehaviorRecord.update_or_create(dict(
             full_name=data.full_name,
-            msg_count=data.msg_count
+            msg_count=data.msg_count,
+            member_level=int(data.member_level)
         ), chat_id=chat_id, user_id=data.user_id)
 
 

@@ -45,11 +45,11 @@ class BotContextRepository(BaseRepository):
                 "status": "ok"
             }, user_id=user_id)
 
-    async def set_delete_record(self, chat_id: str, user_id: str) -> bool:
+    async def set_delete_cache(self, chat_id: str, user_id: str) -> bool:
         namespace = self.get_namespace(f"deleted:{chat_id}:{user_id}")
 
         async with self.redis_conn() as conn:
-            result = await conn.set(namespace, "test", ex=timedelta(seconds=60), nx=True)
+            result = await conn.set(namespace, "", ex=timedelta(seconds=60), nx=True)
             if result:
                 return True
         return False

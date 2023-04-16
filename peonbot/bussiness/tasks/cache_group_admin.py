@@ -1,31 +1,30 @@
 import traceback
-from aiogram import Bot
 from sanic.log import logger
 
-from peonbot.common.redis import RedisProxyFactory
 from peonbot.common.scheduler import AbstractTask
-from peonbot.bussiness.repositories import ChatConfigRepository
-
+from peonbot.bussiness.services import ChatConfigService, CommonService
 
 class CacheGroupAdminTask(AbstractTask):
 
-    def __init__(self, bot: Bot, redis_factory: RedisProxyFactory):
-        self.bot = bot
+    def __init__(self, common_service: CommonService, chat_service: ChatConfigService, **_):
         # initialize repository & service
-        self.chat_repo = ChatConfigRepository(redis_factory)
+        self.common_service = common_service
+        self.chat_service = chat_service
 
     async def run(self):
 
-        chat_ids = await self.chat_repo.get_avaliable_chat_ids()
+        chat_ids = await self.chat_service.get_avaliable_chat_ids()
 
         for chat_id in chat_ids:
             try:
-                admin_list = await self.bot.get_chat_administrators(chat_id)
+                admin_list = await self.chat_service.get_chat_adminstrator(chat_id)
                 admin_ids = [str(admin.user.id) for admin in admin_list]
 
-                config = await self.chat_repo.get_config(chat_id)
+                config = await self.chat_service.get_config(chat_id)
                 config.adminstrators = admin_ids
 
-                await self.chat_repo.set_config_cache(chat_id, config)
+                await self.common_service.add_task(
+                    self.chat_service.set_cache_config(chat_id, config)
+                )
             except Exception:
                 logger.error(traceback.format_exc())

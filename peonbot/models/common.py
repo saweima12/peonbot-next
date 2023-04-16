@@ -9,3 +9,9 @@ class MemberLevel(int, Enum):
     NONE = 0
     JUNIOR = 1
     SENIOR = 2
+
+
+class PermissionLevel(int, Enum):
+    DENY = 0
+    LIMIT = 1
+    ALLOW = 2
