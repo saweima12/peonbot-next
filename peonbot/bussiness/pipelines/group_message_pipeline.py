@@ -127,12 +127,9 @@ class GroupMessagePipeline:
 
         _task = []
         if ctx.mark_delete:
-            _task.append(self.peon_service.delete_message(helper.chat_id, helper.message_id))
-            _task.append(self.peon_service.set_member_permission(
-                helper.chat_id,
-                helper.sender_id,
-                PermissionLevel.LIMIT)
-            )
+            _task.append(self.peon_service.process_delete(helper, ctx))
+            content_type = "forward" if helper.is_forward() else helper.content_type
+            _task.append(self.common_service.record_delete_message(helper.chat_id, content_type, helper.msg.to_python()))
 
         if ctx.mark_record:
             record = ctx.user_record
@@ -142,13 +139,8 @@ class GroupMessagePipeline:
                 self.record_service.set_cache_record(helper.chat_id, record)
             )
 
-        if ctx.msg.strip():
-            fullname = helper.msg.from_user.full_name
-            _text = textlang.DELETE_PATTERN.format(fullname=fullname, user_id=helper.sender_id, reason=ctx.msg)
-            _task.append(self.peon_service.send_delete_tips(helper.chat_id, helper.sender_id, _text))
-
         if len(_task) >= 1:
-            await self.common_service.add_task(asyncio.gather(*_task))
+            self.common_service.add_task(asyncio.gather(*_task))
 
 
     def __check_content_allow(self, helper: MessageHelper,) -> bool:

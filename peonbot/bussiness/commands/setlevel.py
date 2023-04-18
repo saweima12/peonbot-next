@@ -37,6 +37,8 @@ class SetLevelCmd(AbstractCommand):
             return
 
         # check reply message exists.
+        print(helper.msg)
+
         reply_msg = helper.msg.reply_to_message
         if reply_msg is None:
             return
@@ -65,4 +67,4 @@ class SetLevelCmd(AbstractCommand):
         # remove set message
         tasks.append(helper.msg.delete())
 
-        await self.common_service.add_task(asyncio.gather(*tasks))
+        self.common_service.add_task(asyncio.gather(*tasks))

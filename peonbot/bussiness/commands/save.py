@@ -18,4 +18,4 @@ class SaveCmd(AbstractCommand):
             message_json=reply_msg.to_python()
         ), message_id=reply_msg.message_id, chat_id=reply_msg.chat.id)
 
-        await helper.msg.reply(TIPS_SAVE)
+        await reply_msg.reply(TIPS_SAVE)

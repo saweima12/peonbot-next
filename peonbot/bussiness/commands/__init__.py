@@ -12,5 +12,5 @@ def register(cmd_map: CommandMap, service_map: dict):
     setlevel_cmd = SetLevelCmd(**service_map)
     cmd_map.register_command("setlevel", setlevel_cmd)
 
-    save_cmd = SaveCmd(**service_map)
+    save_cmd = SaveCmd()
     cmd_map.register_command("save", save_cmd)

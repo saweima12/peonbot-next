@@ -1,5 +1,5 @@
 from sanic import Sanic, Blueprint
-from . import admin, bot
+from . import dataview, bot
 
 def register(app: Sanic):
 
@@ -9,10 +9,11 @@ def register(app: Sanic):
     # register subpath to group & set url_prefix
     group = Blueprint.group(
         [
-            admin.bp
+            dataview.register(app)
         ],
         url_prefix=url_prefix)
 
     # register group to app
     app.blueprint(group)
-    app.blueprint(bot.bp)
+    
+    app.blueprint(bot.register(app))

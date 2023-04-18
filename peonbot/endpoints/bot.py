@@ -1,34 +1,38 @@
-from sanic import Blueprint, Request, response
+from sanic import Sanic, Blueprint, Request, response
 from sanic.log import logger
 from aiogram.types import Update
 
 from peonbot.common import bot
 from peonbot.utils.bot_util import get_bot_token
 
-bp = Blueprint("bot_endpoint", url_prefix="/bot")
 
-@bp.post("/<token:str>")
-async def on_update(request: Request, token: str):
+def register(app: Sanic):
+    bp = Blueprint("bot_endpoint", url_prefix="/bot")
+
     # get bot & dp
-    _bot = bot.get_bot(request.app)
-    _dp = bot.get_dp(request.app)
+    _bot = bot.get_bot(app)
+    _dp = bot.get_dp(app)
 
-    # check url token is avaliable.
-    if token != get_bot_token(request.app):
+    @bp.post("/<token:str>")
+    async def on_update(request: Request, token: str):
+        # check url token is avaliable.
+        if token != get_bot_token(request.app):
+            return response.empty(200)
+
+        update = Update(**request.json)
+        logger.debug(f"on_update {update.as_json()}")
+        # set default bot & dispatch event.
+        _bot.set_current(_bot)
+        await _dp.process_update(update)
+
         return response.empty(200)
 
-    update = Update(**request.json)
-    logger.debug(f"on_update {update.as_json()}")
-    # set default bot & dispatch event.
-    _bot.set_current(_bot)
-    await _dp.process_update(update)
+    @bp.get("/test")
+    async def test_me(request: Request):
 
-    return response.empty(200)
+        _bot = bot.get_bot(request.app)
+        info = await _bot.get_me()
 
-@bp.get("/test")
-async def test_me(request: Request):
+        return response.json(info.to_python())
 
-    _bot = bot.get_bot(request.app)
-    info = await _bot.get_me()
-
-    return response.json(info.to_python())
+    return bp

@@ -4,7 +4,8 @@ from tortoise.contrib.sanic import register_tortoise
 
 
 from peonbot import default_config, handler, endpoints
-from .common import bot, scheduler, redis, command
+from peonbot.common import bot, scheduler, redis, command
+from peonbot.bussiness import repositories, services
 
 
 

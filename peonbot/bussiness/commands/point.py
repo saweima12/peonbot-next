@@ -12,4 +12,6 @@ class PointCmd(AbstractCommand):
     async def run(self, *args, helper: MessageHelper, ctx: MessageContext, **kwargs):
         record = await self.record_service.get_record(helper.chat_id, helper.sender_id)
         msg = await helper.msg.reply(f"Point: {record.msg_count}")
-        await self.peon_service.set_delay_delete_msg(helper.chat_id, msg.message_id, 5)
+        self.peon_service.delay_delete_task(helper.chat_id, helper.message_id, 5)
+        self.peon_service.delay_delete_task(helper.chat_id, msg.message_id, 5)
+        

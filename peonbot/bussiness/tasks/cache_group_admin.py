@@ -23,7 +23,7 @@ class CacheGroupAdminTask(AbstractTask):
                 config = await self.chat_service.get_config(chat_id)
                 config.adminstrators = admin_ids
 
-                await self.common_service.add_task(
+                self.common_service.add_task(
                     self.chat_service.set_cache_config(chat_id, config)
                 )
             except Exception:

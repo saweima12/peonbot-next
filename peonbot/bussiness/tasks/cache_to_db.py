@@ -62,7 +62,7 @@ class CacheToDBTask(AbstractTask):
                             self.peon_service.set_member_permission(chat.chat_id, user.user_id, PermissionLevel.ALLOW)
                         )
                 # register to background.
-                await self.common_service.add_task(asyncio.gather(
+                self.common_service.add_task(asyncio.gather(
                     self.record_repo.set_db(chat.chat_id, user),
                     *tasks
                 ))

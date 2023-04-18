@@ -101,7 +101,7 @@ def register(app: Sanic, dp: Dispatcher):
                 ))
 
             # Execute task
-            await common_service.add_task(asyncio.gather(*_tasks))
+            common_service.add_task(asyncio.gather(*_tasks))
 
 
         except Exception as _e:
