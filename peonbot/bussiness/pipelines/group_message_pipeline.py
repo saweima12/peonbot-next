@@ -6,8 +6,6 @@ from peonbot.models.context import MessageContext
 from peonbot.models.common import Status, MemberLevel
 from peonbot.models.redis import ChatConfig
 
-from peonbot.models.common import PermissionLevel
-
 from peonbot.bussiness.services import (
     ChatConfigService,
     CommonService,

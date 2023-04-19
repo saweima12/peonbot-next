@@ -37,6 +37,7 @@ class PeonService:
         # process deleted tips.
         fullname = helper.msg.from_user.full_name
         text = DELETE_PATTERN.format(fullname=fullname, user_id=helper.sender_id, reason=ctx.msg)
+        logger.info(text)
 
         self.common_service.add_task(asyncio.gather(
             self.set_member_permission(helper.chat_id, helper.sender_id, PermissionLevel.LIMIT),
