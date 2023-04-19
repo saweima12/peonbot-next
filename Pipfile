@@ -10,6 +10,7 @@ orjson = "*"
 croniter = "*"
 redis = "*"
 tortoise-orm = {extras = ["psycopg"], version = "*"}
+sanic = {extras = ["ext"], version = "*"}
 
 [dev-packages]
 pytest = "*"
