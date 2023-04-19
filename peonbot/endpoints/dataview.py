@@ -78,7 +78,7 @@ def register(app: Sanic) -> Blueprint:
                 'username': username,
                 'record_time': item.record_date.isoformat()
             })
-        
+
         return response.json(result)
 
 
@@ -93,7 +93,7 @@ def register(app: Sanic) -> Blueprint:
         for item in chats:
             chat_id = item.chat_id
             result = await service.get_deleted_context(chat_id)
-            
+
             # get data from result.
             senders = result.get("senders")
             count = result.get("count")

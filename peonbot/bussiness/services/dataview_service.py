@@ -79,7 +79,7 @@ class DataViewService:
 
     def get_username(self, msg:dict) -> str:
         user: dict= msg.get("from", "")
-        return str(user.get("username"))
+        return str(user.get("username", ""))
 
     def remove_field(self, key: str, obj: dict) -> dict:
         if key in obj:
