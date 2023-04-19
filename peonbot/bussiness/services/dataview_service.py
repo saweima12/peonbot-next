@@ -69,8 +69,8 @@ class DataViewService:
 
     def get_full_name(self, msg: dict) -> str:
         user: dict = msg.get("from")
-        first_name = user.get("first_name")
-        last_name = user.get("last_name")
+        first_name = user.get("first_name", "")
+        last_name = user.get("last_name", "")
         return f"{first_name} {last_name}"
 
     def get_user_id(self, msg:dict) -> str:
