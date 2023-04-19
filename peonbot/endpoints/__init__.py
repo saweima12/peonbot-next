@@ -9,11 +9,10 @@ def register(app: Sanic):
     # register subpath to group & set url_prefix
     group = Blueprint.group(
         [
-            dataview.register(app)
+            dataview.register(app),
+            bot.register(app)
         ],
         url_prefix=url_prefix)
 
     # register group to app
     app.blueprint(group)
-    
-    app.blueprint(bot.register(app))
