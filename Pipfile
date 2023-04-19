@@ -4,7 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-sanic = {extras = ["ext"], version = "*"}
 aiogram = "*"
 pydantic = "*"
 orjson = "*"
