@@ -91,6 +91,9 @@ class GroupMessagePipeline:
 
     async def check_message_content(self, helper: MessageHelper, ctx: MessageContext):
 
+        if ctx.level >= MemberLevel.JUNIOR:
+            return True
+
         if not self.__check_content_allow(helper):
             ctx.mark_delete = True
             ctx.mark_record = False
