@@ -9,5 +9,5 @@ services:
     ports:
       - 172.17.0.1:8000:8000
     environment:
-      - INLINEBOT_CONFIG=/app/env.py
-    command: "sanic peonbot:app -H 0.0.0.0 -p 8000 -w 1"
+      - BOT_CONFIG=/app/env.py
+    command: sanic peonbot:create_app -H 0.0.0.0 -p 8000 -w 1

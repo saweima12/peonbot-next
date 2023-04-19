@@ -7,14 +7,16 @@ name = "pypi"
 aiogram = "*"
 pydantic = "*"
 orjson = "*"
-apscheduler = "*"
+croniter = "*"
 redis = "*"
+tortoise-orm = {extras = ["psycopg"], version = "*"}
 sanic = {extras = ["ext"], version = "*"}
-tortoise-orm = {extras = ["asyncpg"], version = "*"}
-opencc = "*"
 
 [dev-packages]
 pytest = "*"
+sniffio = "*"
+sanic-testing = "*"
+pylint = "*"
 
 [requires]
 python_version = "3.10"
