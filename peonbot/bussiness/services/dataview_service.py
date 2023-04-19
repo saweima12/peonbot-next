@@ -29,10 +29,8 @@ class DataViewService:
             # get user_id and full_name
             _key = user.get("id")
 
-            first_name = user.get("first_name")
-            last_name = user.get("last_name")
+            _value = self.get_full_name(item.message_json)
 
-            _value = f"{first_name} {last_name}"
             # add to dictionary
             result[_key] = _value
 
