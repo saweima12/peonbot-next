@@ -6,7 +6,7 @@ aiosqlite==0.17.0
 async-timeout==4.0.2
 attrs==23.1.0
 Babel==2.9.1
-certifi==2022.12.7
+certifi==2023.5.7
 charset-normalizer==3.1.0
 croniter==1.3.14
 frozenlist==1.3.3
@@ -16,7 +16,8 @@ idna==3.4
 iso8601==1.1.0
 magic-filter==1.0.9
 multidict==6.0.4
-orjson==3.8.10
+OpenCC==1.1.6
+orjson==3.8.12
 psycopg==3.0.12
 psycopg-binary==3.0.12
 psycopg-pool==3.1.7
@@ -25,7 +26,7 @@ pypika-tortoise==0.1.6
 python-dateutil==2.8.2
 pytz==2023.3
 PyYAML==6.0
-redis==4.5.4
+redis==4.5.5
 sanic==23.3.0
 sanic-ext==23.3.0
 sanic-routing==22.8.0
@@ -35,5 +36,5 @@ tracerite==1.1.0
 typing_extensions==4.5.0
 ujson==5.7.0
 uvloop==0.17.0
-websockets==11.0.2
-yarl==1.8.2
+websockets==11.0.3
+yarl==1.9.2

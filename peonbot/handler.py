@@ -3,7 +3,7 @@ import traceback
 from sanic import Sanic
 from sanic.log import logger
 from aiogram import Dispatcher
-from aiogram.types import Message, ContentTypes, ChatType
+from aiogram.types import Message, ContentTypes, ChatType, CallbackQuery
 
 from peonbot.common import redis, command, scheduler
 from peonbot.models.common import MemberLevel, PermissionLevel
@@ -131,3 +131,9 @@ def register(app: Sanic, dp: Dispatcher):
         except Exception as _e:
             logger.error(_e)
             logger.error(traceback.format_exc())
+
+
+    @dp.callback_query_handler()
+    async def on_callback_query(query: CallbackQuery):
+        logger.info(query)
+        await query.answer("投票成功")
