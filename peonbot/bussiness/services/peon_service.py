@@ -70,7 +70,6 @@ class PeonService:
     async def send_tips_message(self, chat_id: str, text: str, delay: int=5):
         try:
             message = await self.bot.send_message(chat_id=chat_id, text=text, parse_mode='markdown')
-            self.delay_delete_task(chat_id, str(message.message_id), delay)
         except Exception as _e:
             logger.error(_e)
 

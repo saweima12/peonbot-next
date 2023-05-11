@@ -1,4 +1,6 @@
+import re
 import asyncio
+import opencc
 from peonbot import textlang
 from peonbot.common.command import CommandMap
 from peonbot.extensions.helper import MessageHelper
@@ -28,14 +30,16 @@ class GroupMessagePipeline:
         self.record_service = record_service
         self.peon_service = peon_service
         self.command_map = command_map
+        self.converter = opencc.OpenCC("s2t.json")
 
         self.check_sequence = [
             self.check_command,
             self.check_permission,
             self.check_message_type,
             self.check_message_content,
+            self.check_spchinese_name,
             self.check_has_url,
-            self.check_need_record
+            self.check_need_record,
         ]
 
 
@@ -113,6 +117,34 @@ class GroupMessagePipeline:
             ctx.msg = textlang.REASON_EXTERNAL_LINK
             return False
 
+        return True
+
+    async def check_spchinese_name(self, helper: MessageHelper, ctx: MessageContext):
+
+        if ctx.level >= MemberLevel.JUNIOR:
+            return True
+
+        point = 0
+        # fetch all chinese word.
+        words = re.findall(r"([^u4E00-u9FA5])", helper.sender_fullname)
+        origin_str = "".join(words).strip()
+        tc_str = self.converter.convert(origin_str)
+
+        for index, value in enumerate(tc_str):
+            print(value)
+            if value != origin_str[index]:
+                point += 1
+
+                if point >= 2:
+                    break
+
+        if point >= 2:
+            ctx.mark_record = False
+            ctx.mark_delete = True
+            ctx.msg = textlang.REASON_BLOCK_NAME
+
+        return True
+
     async def check_need_record(self, helper: MessageHelper, ctx: MessageContext):
 
         if not helper.is_text():
@@ -130,7 +162,9 @@ class GroupMessagePipeline:
         if ctx.mark_delete:
             _task.append(self.peon_service.process_delete(helper, ctx))
             content_type = "forward" if helper.is_forward() else helper.content_type
-            _task.append(self.common_service.record_delete_message(helper.chat_id, content_type, helper.msg.to_python()))
+            _task.append(
+                self.common_service.record_delete_message(helper.chat_id, content_type, helper.msg.to_python())
+            )
 
         if ctx.mark_record:
             record = ctx.user_record

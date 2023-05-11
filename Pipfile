@@ -11,6 +11,7 @@ croniter = "*"
 redis = "*"
 tortoise-orm = {extras = ["psycopg"], version = "*"}
 sanic = {extras = ["ext"], version = "*"}
+opencc = "*"
 
 [dev-packages]
 pytest = "*"
