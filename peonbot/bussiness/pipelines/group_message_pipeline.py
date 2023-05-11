@@ -131,7 +131,6 @@ class GroupMessagePipeline:
         tc_str = self.converter.convert(origin_str)
 
         for index, value in enumerate(tc_str):
-            print(value)
             if value != origin_str[index]:
                 point += 1
 
