@@ -64,13 +64,12 @@ class PeonService:
                                     can_send_media_messages=False,
                                     can_send_other_messages=False,
                                     can_add_web_page_previews=False)
-
         return await self.bot.restrict_chat_member(chat_id, user_id, permissions=permission, until_date=until_date)
 
     async def send_tips_message(self, chat_id: str, text: str, delay: int=30):
         try:
             message = await self.bot.send_message(chat_id=chat_id, text=text, parse_mode='markdown')
-            await self.delay_delete_task(chat_id, message.message_id, delay)
+            self.delay_delete_task(chat_id, message.message_id, delay)
         except Exception as _e:
             logger.error(_e)
 
