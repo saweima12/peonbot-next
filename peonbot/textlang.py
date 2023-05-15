@@ -1,4 +1,5 @@
 DELETE_PATTERN = "已刪除 [@{fullname}](tg://user?id={user_id}) 發出的訊息，原因: [{reason}](tg://user?id={user_id})。"
+MUTE_PATTERN = "將 [@{fullname}](tg://user?id={user_id}) 暫時禁止發言。"
 
 REASON_EXTERNAL_FORWARD = "轉發訊息"
 REASON_MEDIA = "多媒體內容"
