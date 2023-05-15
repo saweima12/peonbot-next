@@ -31,10 +31,6 @@ class PeonService:
 
         count = await self.common_service.set_delete_cache(helper.chat_id, helper.sender_id)
 
-        # count greater than 1 means that tips have been sent
-        if count > 1:
-            return
-
         # process deleted tips.
         fullname = helper.msg.from_user.full_name
 
@@ -44,6 +40,11 @@ class PeonService:
                 self.set_member_permission(helper.chat_id, helper.sender_id, PermissionLevel.DENY, timedelta(days=3)),
                 self.send_tips_message(helper.chat_id, text)
             ))
+            return
+
+
+        # count greater than 1 means that tips have been sent
+        if count > 1:
             return
 
         text = DELETE_PATTERN.format(fullname=fullname, user_id=helper.sender_id, reason=ctx.msg)
