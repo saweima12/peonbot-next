@@ -1,4 +1,4 @@
-from typing import Set
+from typing import Set, Optional
 from datetime import timedelta
 
 from sanic.log import logger
@@ -55,16 +55,21 @@ class BotContextRepository(BaseRepository):
 
 
 
-    async def set_delete_cache(self, chat_id: str, user_id: str) -> int:
+    async def set_delete_cache(self, chat_id: str, user_id: str, num: Optional[int] = None) -> int:
         namespace = self.get_namespace(f"deleted:{chat_id}:{user_id}")
 
         async with self.redis_conn() as conn:
-            result = await conn.set(namespace, "1", ex=timedelta(hours=1), nx=True)
+            if num is not None:
+                await conn.set(namespace, num, ex=timedelta(hours=1))
+                return num
+
+            # didn't specify number.
+            result = await conn.set(namespace, 1, ex=timedelta(hours=1))
             if result:
                 return 1
 
             return await conn.incr(namespace)
-    
+
     async def record_deleted_message(self, chat_id: str, content_type: str, data: dict):
         await PeonDeletedMessage.create(chat_id=chat_id,
                                 content_type=content_type,

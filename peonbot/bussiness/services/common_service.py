@@ -1,4 +1,4 @@
-from typing import Awaitable
+from typing import Awaitable, Optional
 from asyncio import Task, Future
 from sanic import Sanic
 from peonbot.bussiness.repositories import BotContextRepository
@@ -19,8 +19,8 @@ class CommonService:
     async def get_delete_cache(self, chat_id: str, user_id: str) -> int:
         return await self.bot_repo.get_delete_cache(chat_id, user_id)
 
-    async def set_delete_cache(self, chat_id: str, user_id: str) -> int:
-        return await self.bot_repo.set_delete_cache(chat_id, user_id)
+    async def set_delete_cache(self, chat_id: str, user_id: str, num: Optional[int]) -> int:
+        return await self.bot_repo.set_delete_cache(chat_id, user_id, num)
 
     async def record_delete_message(self, chat_id: str, content_type: str, data: dict):
         await self.bot_repo.record_deleted_message(chat_id, content_type, data)

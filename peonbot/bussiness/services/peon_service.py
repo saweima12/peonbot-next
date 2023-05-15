@@ -38,7 +38,8 @@ class PeonService:
             text = MUTE_PATTERN.format(fullname=fullname, user_id=helper.sender_id)
             self.common_service.add_task(asyncio.gather(
                 self.set_member_permission(helper.chat_id, helper.sender_id, PermissionLevel.DENY, timedelta(days=3)),
-                self.send_tips_message(helper.chat_id, text)
+                self.send_tips_message(helper.chat_id, text),
+                self.common_service.set_delete_cache(helper.chat_id, helper.sender_id, -1000)
             ))
             return
 
