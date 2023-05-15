@@ -1,5 +1,6 @@
 import asyncio
 import traceback
+from typing import Optional
 from datetime import timedelta
 from sanic.log import logger
 
@@ -7,7 +8,7 @@ from aiogram import Bot
 from aiogram.types import ChatPermissions
 from aiogram.utils.exceptions import MessageToDeleteNotFound
 
-from peonbot.textlang import DELETE_PATTERN
+from peonbot.textlang import DELETE_PATTERN, MUTE_PATTERN
 from peonbot.extensions.helper import MessageHelper
 from peonbot.models.common import PermissionLevel
 from peonbot.models.context import MessageContext
@@ -36,6 +37,15 @@ class PeonService:
 
         # process deleted tips.
         fullname = helper.msg.from_user.full_name
+
+        if count >= 3:
+            text = MUTE_PATTERN.format(fullname=fullname, user_id=helper.sender_id)
+            self.common_service.add_task(asyncio.gather(
+                self.set_member_permission(helper.chat_id, helper.sender_id, PermissionLevel.DENY, timedelta(days=3)),
+                self.send_tips_message(helper.chat_id, text)
+            ))
+            return
+
         text = DELETE_PATTERN.format(fullname=fullname, user_id=helper.sender_id, reason=ctx.msg)
         logger.info(text)
 
@@ -48,7 +58,7 @@ class PeonService:
                                     chat_id: str,
                                     user_id: str,
                                     level: PermissionLevel,
-                                    until_date: timedelta = None):
+                                    until_date: Optional[timedelta] = None):
         if level == PermissionLevel.ALLOW:
             permission = ChatPermissions(can_send_messages=True,
                                     can_send_media_messages=True,
@@ -64,12 +74,15 @@ class PeonService:
                                     can_send_media_messages=False,
                                     can_send_other_messages=False,
                                     can_add_web_page_previews=False)
-        return await self.bot.restrict_chat_member(chat_id, user_id, permissions=permission, until_date=until_date)
 
-    async def send_tips_message(self, chat_id: str, text: str, delay: int=30):
+        return await self.bot.restrict_chat_member(chat_id, int(user_id), permissions=permission, until_date=until_date)
+
+    async def send_tips_message(self, chat_id: str, text: str, delay: int=0):
         try:
             message = await self.bot.send_message(chat_id=chat_id, text=text, parse_mode='markdown')
-            self.delay_delete_task(chat_id, message.message_id, delay)
+
+            if delay > 0:
+                self.delay_delete_task(chat_id, str(message.message_id), delay)
         except Exception as _e:
             logger.error(_e)
 

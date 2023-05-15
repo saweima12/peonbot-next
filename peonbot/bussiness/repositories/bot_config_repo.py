@@ -59,7 +59,7 @@ class BotContextRepository(BaseRepository):
         namespace = self.get_namespace(f"deleted:{chat_id}:{user_id}")
 
         async with self.redis_conn() as conn:
-            result = await conn.set(namespace, "1", ex=timedelta(seconds=60), nx=True)
+            result = await conn.set(namespace, "1", ex=timedelta(hours=1), nx=True)
             if result:
                 return 1
 
