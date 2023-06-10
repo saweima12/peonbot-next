@@ -38,6 +38,7 @@ class GroupMessagePipeline:
             self.check_message_type,
             self.check_message_content,
             self.check_spchinese_name,
+            self.check_spchinese_content,
             self.check_has_url,
             self.check_need_record,
         ]
@@ -134,13 +135,37 @@ class GroupMessagePipeline:
             if value != origin_str[index]:
                 point += 1
 
-                if point >= 2:
+                if point >= 1:
                     break
 
-        if point >= 2:
+        if point >= 1:
             ctx.mark_record = False
             ctx.mark_delete = True
             ctx.msg = textlang.REASON_BLOCK_NAME
+
+        return True
+
+    async def check_spchinese_content(self, helper:MessageHelper, ctx: MessageContext):
+
+        if ctx.level >= MemberLevel.JUNIOR:
+            return True
+
+        # fetch all chinese word.
+        words = re.findall(r"([^u4E00-u9FA5])", helper.content)
+        origin_str = "".join(words).strip()
+        tc_str = self.converter.convert(origin_str)
+
+        for index, value in enumerate(tc_str):
+            if value != origin_str[index]:
+                point += 1
+
+                if point >= 5:
+                    break
+
+        if point >= 5:
+            ctx.mark_record = False
+            ctx.mark_delete = True
+            ctx.msg = textlang.REASON_BLOCK_SCINESE
 
         return True
 
