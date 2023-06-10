@@ -160,10 +160,10 @@ class GroupMessagePipeline:
             if value != origin_str[index]:
                 point += 1
 
-                if point >= 1:
+                if point >= 3:
                     break
 
-        if point >= 1:
+        if point >= 3:
             ctx.mark_record = False
             ctx.mark_delete = True
             ctx.msg = textlang.REASON_BLOCK_SCINESE
