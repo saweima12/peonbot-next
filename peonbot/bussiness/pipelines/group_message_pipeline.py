@@ -30,7 +30,7 @@ class GroupMessagePipeline:
         self.record_service = record_service
         self.peon_service = peon_service
         self.command_map = command_map
-        self.converter = opencc.OpenCC("s2t.json")
+        self.converter = opencc.OpenCC("s2tw")
 
         self.check_sequence = [
             self.check_command,
