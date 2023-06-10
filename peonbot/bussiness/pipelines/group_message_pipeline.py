@@ -7,6 +7,7 @@ from peonbot.extensions.helper import MessageHelper
 from peonbot.models.context import MessageContext
 from peonbot.models.common import Status, MemberLevel
 from peonbot.models.redis import ChatConfig
+from peonbot.utils.text_util import check_block_name
 
 from peonbot.bussiness.services import (
     ChatConfigService,
@@ -124,6 +125,12 @@ class GroupMessagePipeline:
 
         if ctx.level >= MemberLevel.JUNIOR:
             return True
+
+        if check_block_name(helper.sender_fullname):
+            ctx.mark_record = False
+            ctx.mark_delete = True
+            ctx.msg = textlang.REASON_BLOCK_NAME
+            return False
 
         point = 0
         # fetch all chinese word.
