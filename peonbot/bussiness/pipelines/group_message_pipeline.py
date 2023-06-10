@@ -150,6 +150,7 @@ class GroupMessagePipeline:
         if ctx.level >= MemberLevel.JUNIOR:
             return True
 
+        point = 0
         # fetch all chinese word.
         words = re.findall(r"([^u4E00-u9FA5])", helper.content)
         origin_str = "".join(words).strip()
@@ -159,10 +160,10 @@ class GroupMessagePipeline:
             if value != origin_str[index]:
                 point += 1
 
-                if point >= 5:
+                if point >= 1:
                     break
 
-        if point >= 5:
+        if point >= 1:
             ctx.mark_record = False
             ctx.mark_delete = True
             ctx.msg = textlang.REASON_BLOCK_SCINESE
