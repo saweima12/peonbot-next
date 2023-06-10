@@ -126,12 +126,6 @@ class GroupMessagePipeline:
         if ctx.level >= MemberLevel.JUNIOR:
             return True
 
-        if check_block_name(helper.sender_fullname):
-            ctx.mark_record = False
-            ctx.mark_delete = True
-            ctx.msg = textlang.REASON_BLOCK_NAME
-            return False
-
         point = 0
         # fetch all chinese word.
         words = re.findall(r"([^u4E00-u9FA5])", helper.sender_fullname)
