@@ -35,8 +35,8 @@ class MuteCmd(AbstractCommand):
         # set member permission
         if hours >= 1:
             await self.peon_service.set_member_permission(helper.chat_id, reply_user_id, PermissionLevel.DENY, timedelta(hours=hours))
-            await reply_msg.reply(TIPS_MUTE.format(fullname=reply_user_fullname, user_id=reply_user_id, hours=hours))
+            await reply_msg.reply(TIPS_MUTE.format(fullname=reply_user_fullname, user_id=reply_user_id, hours=hours), parse_mode='markdown')
         else:
             await self.peon_service.set_member_permission(helper.chat_id, reply_user_id, PermissionLevel.LIMIT, timedelta(hours=hours))
-            await reply_msg.reply(TIPS_UNMUTE.format(fullname=reply_user_fullname, user_id=reply_user_id))
+            await reply_msg.reply(TIPS_UNMUTE.format(fullname=reply_user_fullname, user_id=reply_user_id), parse_mode='markdown')
         
