@@ -9,6 +9,8 @@ REASON_BLOCK_SCINESE = "新進人員請使用正體中文進行溝通"
 
 TIPS_SETLEVEL = "成功設置 [@{fullname}](tg://user?id={user_id}) 的權限組為 {level}"
 TIPS_SAVE = "儲存完畢。"
+TIPS_MUTE ="暫時停止 [@{fullname}](tg://user?id={user_id}) 的發言功能 {hours} 小時"
+TIPS_UNMUTE ="開啟 [@{fullname}](tg://user?id={user_id}) 的發言功能"
 
 
 SENDER_PTN = "[@{fullname}](tg://user?id={user_id})"
