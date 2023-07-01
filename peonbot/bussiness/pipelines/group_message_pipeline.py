@@ -7,7 +7,7 @@ from peonbot.extensions.helper import MessageHelper
 from peonbot.models.context import MessageContext
 from peonbot.models.common import Status, MemberLevel
 from peonbot.models.redis import ChatConfig
-from peonbot.utils.text_util import check_block_name
+from peonbot.utils.text_util import check_block_name, check_arabi
 
 from peonbot.bussiness.services import (
     ChatConfigService,
@@ -38,6 +38,7 @@ class GroupMessagePipeline:
             self.check_permission,
             self.check_message_type,
             self.check_message_content,
+            self.check_block_char,
             self.check_spchinese_name,
             self.check_spchinese_content,
             self.check_has_url,
@@ -161,13 +162,25 @@ class GroupMessagePipeline:
             if value != origin_str[index]:
                 point += 1
 
-                if point >= 3:
+                if point >= 1:
                     break
 
-        if point >= 3:
+        if point >= 1:
             ctx.mark_record = False
             ctx.mark_delete = True
             ctx.msg = textlang.REASON_BLOCK_SCINESE
+            return False
+
+        return True
+    
+    async def check_block_char(self, helper: MessageHelper, ctx:MessageContext):
+        
+        if not check_arabi(helper.msg.text):
+            ctx.mark_record = False
+            ctx.mark_delete = True
+            ctx.msg = textlang.REASON_BLOCK_SCINESE
+            return False
+
 
         return True
 
