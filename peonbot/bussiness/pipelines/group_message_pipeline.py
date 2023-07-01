@@ -38,7 +38,6 @@ class GroupMessagePipeline:
             self.check_permission,
             self.check_message_type,
             self.check_message_content,
-            self.check_block_char,
             self.check_spchinese_name,
             self.check_spchinese_content,
             self.check_has_url,
@@ -46,7 +45,7 @@ class GroupMessagePipeline:
         ]
 
 
-    async def invoke(self, msg: MessageHelper) -> MessageContext:
+    async def sinvoke(self, msg: MessageHelper) -> MessageContext:
 
         chat_config = await self.chat_service.get_config(msg.chat_id)
 
@@ -165,7 +164,7 @@ class GroupMessagePipeline:
                 if point >= 1:
                     break
 
-        if point >= 1:
+        if point >= 2:
             ctx.mark_record = False
             ctx.mark_delete = True
             ctx.msg = textlang.REASON_BLOCK_SCINESE
@@ -178,7 +177,7 @@ class GroupMessagePipeline:
         if ctx.level >= MemberLevel.JUNIOR:
             return True
 
-        if check_arabi(helper.msg.text):
+        if check_arabi(helper.msg.text) or check_arabi(helper.sender_fullname):
             ctx.mark_record = False
             ctx.mark_delete = True
             ctx.msg = textlang.REASON_BLOCK_SCINESE
@@ -214,7 +213,7 @@ class GroupMessagePipeline:
                 self.record_service.set_cache_record(helper.chat_id, record)
             )
 
-        if len(_task) >= 1:
+        if len(_task) > 0:
             self.common_service.add_task(asyncio.gather(*_task))
 
 
