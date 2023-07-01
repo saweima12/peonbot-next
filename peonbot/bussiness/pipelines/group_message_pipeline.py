@@ -38,6 +38,7 @@ class GroupMessagePipeline:
             self.check_permission,
             self.check_message_type,
             self.check_message_content,
+            self.check_block_char,
             self.check_spchinese_name,
             self.check_spchinese_content,
             self.check_has_url,
