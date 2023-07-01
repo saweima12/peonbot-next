@@ -175,13 +175,14 @@ class GroupMessagePipeline:
     
     async def check_block_char(self, helper: MessageHelper, ctx:MessageContext):
         
-        if not check_arabi(helper.msg.text):
+        if ctx.level >= MemberLevel.JUNIOR:
+            return True
+
+        if check_arabi(helper.msg.text):
             ctx.mark_record = False
             ctx.mark_delete = True
             ctx.msg = textlang.REASON_BLOCK_SCINESE
             return False
-
-
         return True
 
     async def check_need_record(self, helper: MessageHelper, ctx: MessageContext):
