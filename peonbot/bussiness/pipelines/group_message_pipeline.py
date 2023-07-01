@@ -45,7 +45,7 @@ class GroupMessagePipeline:
         ]
 
 
-    async def sinvoke(self, msg: MessageHelper) -> MessageContext:
+    async def invoke(self, msg: MessageHelper) -> MessageContext:
 
         chat_config = await self.chat_service.get_config(msg.chat_id)
 
