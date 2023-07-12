@@ -1,7 +1,7 @@
 import re
 import asyncio
 import opencc
-from peonbot import textlang
+from peonbot import textlang, default_config
 from peonbot.common.command import CommandMap
 from peonbot.extensions.helper import MessageHelper
 from peonbot.models.context import MessageContext
@@ -132,11 +132,14 @@ class GroupMessagePipeline:
         words = re.findall(r"([^u4E00-u9FA5])", helper.sender_fullname)
         origin_str = "".join(words).strip()
         tc_str = self.converter.convert(origin_str)
+        
 
         for index, value in enumerate(tc_str):
             if value != origin_str[index]:
-                point += 1
+                if origin_str[index] in default_config.IGNORE_WORD:
+                    continue
 
+                point += 1            
                 if point >= 1:
                     break
 
