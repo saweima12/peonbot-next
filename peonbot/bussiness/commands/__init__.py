@@ -1,5 +1,6 @@
 from peonbot.common.command import CommandMap
 
+from .query import QueryCmd
 from .point import PointCmd
 from .setlevel import SetLevelCmd
 from .save import SaveCmd
@@ -18,3 +19,6 @@ def register(cmd_map: CommandMap, service_map: dict):
 
     mute_cmd = MuteCmd(**service_map)
     cmd_map.register_command("mute", mute_cmd)
+
+    query_cmd = QueryCmd()
+    cmd_map.register_command("query", query_cmd)
