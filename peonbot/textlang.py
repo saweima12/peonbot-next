@@ -11,7 +11,8 @@ TIPS_SETLEVEL = "成功設置 [@{fullname}](tg://user?id={user_id}) 的權限組
 TIPS_SAVE = "儲存完畢。"
 TIPS_MUTE ="暫時停止 [@{fullname}](tg://user?id={user_id}) 的發言功能 {hours} 小時"
 TIPS_UNMUTE ="開啟 [@{fullname}](tg://user?id={user_id}) 的發言功能"
-
+TIPS_QUERY_FAILED = "查詢失敗，找不到對象。"
+TIPS_QUERY_SUCCESS = "查詢成功，共計 {count} 筆。\n {content}"
 
 SENDER_PTN = "[@{fullname}](tg://user?id={user_id})"
 URL_PTN = "https://tassis.github.io/chats/{chat_id}/deletedmsg"
