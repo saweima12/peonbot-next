@@ -165,7 +165,7 @@ class GroupMessagePipeline:
             if value != origin_str[index]:
                 point += 1
 
-                if point >= 1:
+                if point >= 2:
                     break
 
         if point >= 2:
