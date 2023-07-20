@@ -163,8 +163,10 @@ class GroupMessagePipeline:
 
         for index, value in enumerate(tc_str):
             if value != origin_str[index]:
-                point += 1
+                if origin_str[index] in default_config.IGNORE_WORD:
+                    continue
 
+                point += 1
                 if point >= 2:
                     break
 
