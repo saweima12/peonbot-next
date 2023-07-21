@@ -71,6 +71,13 @@ class MessageHelper:
             if len(mention_entities) > 0:
                 return mention_entities
         return None
+    
+    def get_textlink(self) -> List[MessageEntity]:
+        if self.msg.entities:
+            textlink_entities = [entity for entity in self.msg.entities if entity.type == "text_link"]
+            if len(textlink_entities) > 0:
+                return textlink_entities
+        return None
 
     def has_url(self) -> bool:
         if self.msg.entities:
