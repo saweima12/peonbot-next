@@ -128,6 +128,7 @@ class GroupMessagePipeline:
 
         return True
 
+
     async def check_spchinese_name(self, helper: MessageHelper, ctx: MessageContext):
 
         if ctx.level >= MemberLevel.JUNIOR:
@@ -238,6 +239,9 @@ class GroupMessagePipeline:
             return False
 
         if helper.get_mentions():
+            return False
+        
+        if helper.get_textlink():
             return False
 
         return True
