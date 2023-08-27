@@ -81,3 +81,4 @@ class MessageHelper:
         if self.is_text():
             return check_has_url(self.msg.text)
         return False
+    

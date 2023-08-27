@@ -1,6 +1,7 @@
 import re
 import asyncio
 import opencc
+from sanic.log import logger
 from peonbot import textlang, default_config
 from peonbot.common.command import CommandMap
 from peonbot.extensions.helper import MessageHelper
@@ -52,7 +53,12 @@ class GroupMessagePipeline:
 
         # if the group isn't a registered group, direct return.
         if not chat_config.status == Status.OK:
-            return None
+            logger.info("Group is not registered.")
+            logger.info(msg.msg.to_python())
+            return MessageContext(
+                mark_delete=False,
+                mark_record=False
+            )
 
         context = await self.__cache_context(msg, chat_config)
 
