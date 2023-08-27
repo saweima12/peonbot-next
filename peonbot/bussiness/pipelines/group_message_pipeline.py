@@ -55,11 +55,8 @@ class GroupMessagePipeline:
         if not chat_config.status == Status.OK:
             logger.info("Group is not registered.")
             logger.info(msg.msg.to_python())
-            return MessageContext(
-                mark_delete=False,
-                mark_record=False
-            )
-
+            return None
+        
         context = await self.__cache_context(msg, chat_config)
 
         for handle in self.check_sequence:

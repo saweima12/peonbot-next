@@ -125,6 +125,11 @@ def register(app: Sanic, dp: Dispatcher):
             # send into pipeline to check.
             ctx = await group_msg_pipeline.invoke(helper)
             logger.debug(f"Context {ctx}")
+
+            # when group is not registered, ignore it.
+            if not ctx:
+                return
+            
             # prcoess message.
             await group_msg_pipeline.process_message(helper, ctx)
 
